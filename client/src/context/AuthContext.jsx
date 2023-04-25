@@ -1,4 +1,4 @@
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { BASE_URL, postRequest } from "../utils/services";
 
 export const AuthContext = createContext();
@@ -38,6 +38,11 @@ function AuthContextProvider({ children }) {
     },
     [signupInfo]
   );
+
+  useEffect(() => {
+    const user = localStorage.getItem("User");
+    setUser(JSON.parse(user));
+  }, []);
 
   return (
     <AuthContext.Provider
