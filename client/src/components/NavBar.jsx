@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 
 function NavBar() {
   const { user } = useContext(AuthContext);
+
   return (
     <Navbar bg="dark" className="mb-4" style={{ height: "5rem" }}>
       <Container>
@@ -13,7 +14,10 @@ function NavBar() {
             MasonTALK
           </Link>
         </h2>
-        <span className="text-warning">{user?.name}님, 환영합니다 🎉</span>
+        {user && (
+          <span className="text-warning">{user?.name}님, 환영합니다 🎉</span>
+        )}
+
         <Nav>
           <Stack direction="horizontal" gap={3}>
             <Link to="/signin" className="link-light text-decoration-none">

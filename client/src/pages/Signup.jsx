@@ -29,7 +29,7 @@ function Signup() {
                 value={signupInfo.name}
                 placeholder="이름"
                 onChange={event =>
-                  setSignupInfo(prev => ({ ...prev, name: event.target.value }))
+                  setSignupInfo({ ...signupInfo, name: event.target.value })
                 }
               />
               <Form.Control
@@ -37,10 +37,7 @@ function Signup() {
                 value={signupInfo.email}
                 placeholder="이메일"
                 onChange={event =>
-                  setSignupInfo(prev => ({
-                    ...prev,
-                    email: event.target.value,
-                  }))
+                  setSignupInfo({ ...signupInfo, email: event.target.value })
                 }
               />
               <Form.Control
@@ -48,10 +45,7 @@ function Signup() {
                 value={signupInfo.password}
                 placeholder="비밀번호"
                 onChange={event =>
-                  setSignupInfo(prev => ({
-                    ...prev,
-                    password: event.target.value,
-                  }))
+                  setSignupInfo({ ...signupInfo, password: event.target.value })
                 }
               />
               <Button variant="secondary" type="submit">

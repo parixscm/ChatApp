@@ -34,11 +34,11 @@ function AuthContextProvider({ children }) {
 
       localStorage.setItem("User", JSON.stringify(response));
       setUser(response);
-      alert(`${signupInfo.name}님, 환영합니다!! 😊`);
     },
     [signupInfo]
   );
 
+  // signupUser 함수 때문에 user가 업데이트 되면 다시 실행되면서 로컬스토리지에서 값을 불러옴
   useEffect(() => {
     const user = localStorage.getItem("User");
     setUser(JSON.parse(user));
