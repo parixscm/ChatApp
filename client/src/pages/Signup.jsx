@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import BeatLoader from "react-spinners/BeatLoader";
 import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap";
 
 function Signup() {
@@ -49,7 +50,11 @@ function Signup() {
                 }
               />
               <Button variant="secondary" type="submit">
-                {isSignupLoading ? "처리 중입니다..." : "가입하기"}
+                {isSignupLoading ? (
+                  <BeatLoader color="#f1c40f" size={7} speedMultiplier={0.9} />
+                ) : (
+                  "가입하기"
+                )}
               </Button>
               {signupError?.error && (
                 <Alert variant="danger">

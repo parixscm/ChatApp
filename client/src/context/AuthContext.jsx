@@ -5,6 +5,12 @@ export const AuthContext = createContext();
 
 function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [signinError, setSigninError] = useState(null);
+  const [isSigninLoading, setIsSigninLoading] = useState(false);
+  const [signinInfo, setSigninInfo] = useState({
+    email: "",
+    password: "",
+  });
   const [signupError, setSignupError] = useState(null);
   const [isSignupLoading, setIsSignupLoading] = useState(false);
   const [signupInfo, setSignupInfo] = useState({
@@ -38,6 +44,31 @@ function AuthContextProvider({ children }) {
     [signupInfo]
   );
 
+  // ✅ 로그인
+  const signinUser = useCallback(
+    async event => {
+      event.preventDefault();
+      setIsSigninLoading(true);
+      setSigninError(null);
+      const response = await postRequest(
+        `${BASE_URL}/users/signin`,
+        JSON.stringify(signinInfo)
+      );
+      setIsSigninLoading(false);
+      setSigninInfo({ email: "", password: "" });
+
+      // 에러가 발생한 경우
+      if (response.error) {
+        setSigninError(response);
+        return;
+      }
+
+      localStorage.setItem("User", JSON.stringify(response));
+      setUser(response);
+    },
+    [signinInfo]
+  );
+
   // ✅ 로그아웃
   const signoutUser = useCallback(() => {
     localStorage.removeItem("User");
@@ -54,11 +85,19 @@ function AuthContextProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        // 회원가입
         signupInfo,
         setSignupInfo,
         signupUser,
         signupError,
         isSignupLoading,
+        // 로그인
+        signinInfo,
+        setSigninInfo,
+        signinUser,
+        signinError,
+        isSigninLoading,
+        // 로그아웃
         signoutUser,
       }}
     >
