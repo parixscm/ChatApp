@@ -75,7 +75,7 @@ function AuthContextProvider({ children }) {
     setUser(null);
   }, []);
 
-  // signupUser 함수 때문에 user가 업데이트 되면 다시 실행되면서 로컬스토리지에서 값을 불러옴
+  // 회원가입 or 로그인 이후 user가 업데이트 되면 로컬스토리지에서 값을 불러옴
   useEffect(() => {
     const user = localStorage.getItem("User");
     setUser(JSON.parse(user));
