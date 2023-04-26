@@ -38,6 +38,12 @@ function AuthContextProvider({ children }) {
     [signupInfo]
   );
 
+  // ✅ 로그아웃
+  const signoutUser = useCallback(() => {
+    localStorage.removeItem("User");
+    setUser(null);
+  }, []);
+
   // signupUser 함수 때문에 user가 업데이트 되면 다시 실행되면서 로컬스토리지에서 값을 불러옴
   useEffect(() => {
     const user = localStorage.getItem("User");
@@ -48,11 +54,12 @@ function AuthContextProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        signupInfo,
+        setSignupInfo,
         signupUser,
         signupError,
         isSignupLoading,
-        signupInfo,
-        setSignupInfo,
+        signoutUser,
       }}
     >
       {children}
