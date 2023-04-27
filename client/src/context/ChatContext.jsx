@@ -15,6 +15,9 @@ function ChatContextProvider({ children, user }) {
   const [messages, setMessages] = useState(null);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
+  // 보내는 채팅 메시지
+  const [sendTextMessageError, setSendTextMessageError] = useState(null);
+  const [newMessage, setNewMessage] = useState(null);
 
   // ✅ 채팅 생성
   const createChat = useCallback(async (firstId, secondId) => {
@@ -28,6 +31,28 @@ function ChatContextProvider({ children, user }) {
     }
 
     setUserChats(prev => [response, ...prev]);
+  }, []);
+
+  // ✅ 메시지 보내기
+  const sendMessage = useCallback(async (chatId, senderId, text) => {
+    if (!text) return;
+
+    const response = await postRequest(
+      `${BASE_URL}/messages`,
+      JSON.stringify({
+        chatId,
+        senderId,
+        text,
+      })
+    );
+
+    if (response.error) {
+      setSendTextMessageError(response);
+      return;
+    }
+
+    setNewMessage(response);
+    setMessages(prev => [...prev, response]);
   }, []);
 
   // ✅ 채팅 시작하지 않은 유저 목록 불러오기
@@ -120,6 +145,7 @@ function ChatContextProvider({ children, user }) {
         messages,
         messagesError,
         isMessagesLoading,
+        sendMessage,
       }}
     >
       {children}

@@ -105,12 +105,12 @@ body {
 /* 메시지 입력창  */
 .chat-input {
   width: 100%;
-  background: rgb(30, 30, 30);
+  background: #fdcb6e;
   padding: 1rem;
 }
 .send-btn {
   border: none;
-  background: rgba(72, 112, 223, 1);
+  background: #6ab04c;
   color: white;
   height: 40px;
   width: 40px;
