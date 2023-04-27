@@ -5,10 +5,11 @@ import { Container, Stack } from "react-bootstrap";
 import UserChat from "../components/chat/UserChat";
 import BeatLoader from "react-spinners/BeatLoader";
 import PotentialUsers from "../components/chat/PotentialUsers";
+import ChatBox from "../components/ChatBox";
 
 function Chat() {
   const { user } = useContext(AuthContext);
-  const { userChats, userChatsError, isUserChatsLoading } =
+  const { userChats, isUserChatsLoading, setCurrentChat } =
     useContext(ChatContext);
 
   return (
@@ -21,12 +22,13 @@ function Chat() {
               <BeatLoader size={7} speedMultiplier={0.9} />
             )}
             {userChats?.map((chat, idx) => (
-              <div key={idx}>
+              <div key={idx} onClick={() => setCurrentChat(chat)}>
                 <UserChat user={user} chat={chat} />
               </div>
             ))}
           </Stack>
-          <p>채팅 화면</p>
+
+          <ChatBox />
         </Stack>
       )}
     </Container>
