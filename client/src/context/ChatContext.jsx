@@ -155,12 +155,30 @@ function ChatContextProvider({ children, user }) {
       setOnlineUsers(res);
     });
 
-    return () => {
-      socket.off("getOnlineUsers");
-    };
+    return () => socket.off("getOnlineUsers");
   }, [socket, user]);
 
-  console.log("onlineUsers: ", onlineUsers);
+  // ✅ 메시지 보내기
+  useEffect(() => {
+    if (!socket) return;
+
+    const receiverId = currentChat?.members.find(id => id !== user?._id);
+
+    socket.emit("sendMessage", { ...newMessage, receiverId });
+  }, [newMessage]);
+
+  // ✅ 메시지 받기
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("getMessage", res => {
+      if (currentChat?._id !== res.chatId) return;
+
+      setMessages(prev => [...prev, res]);
+    });
+
+    return () => socket.off("getMessage");
+  }, [socket, currentChat]);
 
   return (
     <ChatContext.Provider

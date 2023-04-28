@@ -20,6 +20,17 @@ io.on("connection", socket => {
     io.emit("getOnlineUsers", onlineUsers);
   });
 
+  // ✅ 메시지 추가
+  socket.on("sendMessage", message => {
+    const user = onlineUsers.find(
+      onlineUser => onlineUser.userId === message.receiverId
+    );
+
+    if (user) {
+      io.to(user.socketId).emit("getMessage", message);
+    }
+  });
+
   // ✅ (수신) 유저 연결 종료
   socket.on("disconnect", () => {
     onlineUsers = onlineUsers.filter(user => user.socketId !== socket.id);
