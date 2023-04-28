@@ -146,6 +146,7 @@ function ChatContextProvider({ children, user }) {
     };
   }, [user]);
 
+  // ✅ 소켓 연결 후 온라인 유저 목록 불러오기
   useEffect(() => {
     if (!socket) return;
 
@@ -153,6 +154,10 @@ function ChatContextProvider({ children, user }) {
     socket.on("getOnlineUsers", res => {
       setOnlineUsers(res);
     });
+
+    return () => {
+      socket.off("getOnlineUsers");
+    };
   }, [socket, user]);
 
   console.log("onlineUsers: ", onlineUsers);
@@ -171,6 +176,7 @@ function ChatContextProvider({ children, user }) {
         messagesError,
         isMessagesLoading,
         sendMessage,
+        onlineUsers,
       }}
     >
       {children}

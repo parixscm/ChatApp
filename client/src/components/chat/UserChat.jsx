@@ -1,9 +1,16 @@
 import { Stack } from "react-bootstrap";
 import avatar from "../../assets/avatar.svg";
 import useFetchReceiverUser from "../../hooks/useFetchReceiverUser";
+import { useContext } from "react";
+import { ChatContext } from "../../context/ChatContext";
 
 function UserChat({ user, chat }) {
+  const { onlineUsers } = useContext(ChatContext);
   const { receiverUser } = useFetchReceiverUser(user, chat);
+
+  const isOnline = onlineUsers?.some(
+    onlineUser => onlineUser.userId === receiverUser?._id
+  );
 
   return (
     <Stack
@@ -16,7 +23,6 @@ function UserChat({ user, chat }) {
         <div className="me-2" style={{ color: "black" }}>
           <img src={avatar} height="35px" />
         </div>
-        sfsdf
         <div className="text-content">
           <div className="name" style={{ color: "black" }}>
             {receiverUser?.name}
@@ -27,7 +33,7 @@ function UserChat({ user, chat }) {
       <div className="d-flex flex-column align-items-end">
         <div className="date">2023/4/25</div>
         <div className="this-user-notifications">7</div>
-        <span className="user-online"></span>
+        <span className={isOnline ? "user-online" : ""}></span>
       </div>
     </Stack>
   );
