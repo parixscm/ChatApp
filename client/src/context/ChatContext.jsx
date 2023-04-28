@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import { BASE_URL, getRequest, postRequest } from "../utils/services";
+import { io } from "socket.io-client";
 
 export const ChatContext = createContext();
 
@@ -18,6 +19,9 @@ function ChatContextProvider({ children, user }) {
   // 보내는 채팅 메시지
   const [sendTextMessageError, setSendTextMessageError] = useState(null);
   const [newMessage, setNewMessage] = useState(null);
+  // 소켓
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   // ✅ 채팅 생성
   const createChat = useCallback(async (firstId, secondId) => {
@@ -131,6 +135,27 @@ function ChatContextProvider({ children, user }) {
     };
     getMessages();
   }, [currentChat]);
+
+  // ✅ 소켓 연결
+  useEffect(() => {
+    const newSocket = io("http://localhost:3000");
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.emit("addNewUser", user?._id);
+    socket.on("getOnlineUsers", res => {
+      setOnlineUsers(res);
+    });
+  }, [socket, user]);
+
+  console.log("onlineUsers: ", onlineUsers);
 
   return (
     <ChatContext.Provider

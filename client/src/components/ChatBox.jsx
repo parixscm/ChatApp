@@ -9,13 +9,8 @@ import InputEmoji from "react-input-emoji";
 
 function ChatBox() {
   const { user } = useContext(AuthContext);
-  const {
-    currentChat,
-    messages,
-    messagesError,
-    isMessagesLoading,
-    sendMessage,
-  } = useContext(ChatContext);
+  const { currentChat, messages, isMessagesLoading, sendMessage } =
+    useContext(ChatContext);
   const { receiverUser } = useFetchReceiverUser(user, currentChat);
   const [textMessage, setTextMessage] = useState("");
 
