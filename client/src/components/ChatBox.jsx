@@ -17,6 +17,7 @@ function ChatBox() {
 
   const handleSendMessage = () => {
     sendMessage(currentChat._id, user._id, textMessage);
+    console.log("🟠");
     setTextMessage("");
   };
 
@@ -58,12 +59,17 @@ function ChatBox() {
           ))}
       </Stack>
       <Stack direction="horizontal" gap={3} className="chat-input flex-grow-0">
-        <InputEmoji
+        <input
+          type="text"
           value={textMessage}
-          onKeyDown={event => event.key === "Enter" && handleSendMessage()}
-          onChange={setTextMessage}
+          onKeyDown={event =>
+            event.key === "Enter" &&
+            event.nativeEvent.isComposing === false &&
+            handleSendMessage()
+          }
+          onChange={event => setTextMessage(event.target.value)}
           placeholder="메시지를 입력하세요!"
-          borderColor="rgba(72, 112, 223, 0.2)"
+          className="message-input"
         />
         <button onClick={handleSendMessage} className="send-btn">
           <svg

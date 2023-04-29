@@ -108,6 +108,15 @@ body {
   background: #fdcb6e;
   padding: 1rem;
 }
+
+.message-input {
+  width: 100%;
+  border-radius: 10px;
+  padding: 5px 0 5px 10px;
+  outline: none;
+  border: #fdcb6e;
+}
+
 .send-btn {
   border: none;
   background: #6ab04c;
