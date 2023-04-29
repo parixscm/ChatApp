@@ -23,7 +23,7 @@ function ChatContextProvider({ children, user }) {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
 
-  // ✅ 채팅 생성
+  // 🔵 채팅 생성
   const createChat = useCallback(async (firstId, secondId) => {
     const response = await postRequest(
       `${BASE_URL}/chats`,
@@ -37,7 +37,7 @@ function ChatContextProvider({ children, user }) {
     setUserChats(prev => [response, ...prev]);
   }, []);
 
-  // ✅ 메시지 보내기
+  // 🔵 메시지 보내기
   const sendMessage = useCallback(async (chatId, senderId, text) => {
     if (!text) return;
 
@@ -136,7 +136,7 @@ function ChatContextProvider({ children, user }) {
     getMessages();
   }, [currentChat]);
 
-  // ✅ 소켓 연결
+  // 🟠 소켓 연결
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
@@ -146,7 +146,7 @@ function ChatContextProvider({ children, user }) {
     };
   }, [user]);
 
-  // ✅ 소켓 연결 후 온라인 유저 목록 불러오기
+  // 🟠 소켓 연결 후 온라인 유저 목록 불러오기
   useEffect(() => {
     if (!socket) return;
 
@@ -158,7 +158,7 @@ function ChatContextProvider({ children, user }) {
     return () => socket.off("getOnlineUsers");
   }, [socket, user]);
 
-  // ✅ 메시지 보내기
+  // 🟠 메시지 보내기
   useEffect(() => {
     if (!socket) return;
 
@@ -167,7 +167,7 @@ function ChatContextProvider({ children, user }) {
     socket.emit("sendMessage", { ...newMessage, receiverId });
   }, [newMessage]);
 
-  // ✅ 메시지 받기
+  // 🟠 메시지 받기
   useEffect(() => {
     if (!socket) return;
 

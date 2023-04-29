@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import useFetchReceiverUser from "../hooks/useFetchReceiverUser";
@@ -13,11 +13,16 @@ function ChatBox() {
     useContext(ChatContext);
   const { receiverUser } = useFetchReceiverUser(user, currentChat);
   const [textMessage, setTextMessage] = useState("");
+  const scrollRef = useRef();
 
   const handleSendMessage = () => {
     sendMessage(currentChat._id, user._id, textMessage);
     setTextMessage("");
   };
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   if (!receiverUser || messages.length === 0)
     return (
@@ -38,6 +43,7 @@ function ChatBox() {
           messages.map((message, idx) => (
             <Stack
               key={idx}
+              ref={scrollRef}
               className={`${
                 message.senderId === user?._id
                   ? "message self align-self-end flex-grow-0"
@@ -54,6 +60,7 @@ function ChatBox() {
       <Stack direction="horizontal" gap={3} className="chat-input flex-grow-0">
         <InputEmoji
           value={textMessage}
+          onKeyDown={event => event.key === "Enter" && handleSendMessage()}
           onChange={setTextMessage}
           placeholder="메시지를 입력하세요!"
           borderColor="rgba(72, 112, 223, 0.2)"
