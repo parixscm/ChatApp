@@ -1,21 +1,17 @@
 import { useContext, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
-import { AuthContext } from "../../context/AuthContext";
-import { getUnreadNotifications } from "../../utils/getUnreadNotifications";
 import moment from "moment";
 
 function Notification() {
-  const { user } = useContext(AuthContext);
   const {
     notifications,
-    userChats,
     allUsers,
     markAllNotificationsAsRead,
     markNotificationAsRead,
   } = useContext(ChatContext);
   const [isNotificationOpened, setIsNotificationOpened] = useState(false);
 
-  const unreadNotifications = getUnreadNotifications(notifications);
+  // notifications 객체의 각 요소를 변형 (메시지 전송한 유저의 이름 추가)
   const modifiedNotifications = notifications.map(notification => {
     const sender = allUsers.find(user => user._id === notification.senderId);
 
@@ -51,10 +47,7 @@ function Notification() {
         <div className="notifications-box">
           <div className="notifications-header">
             <h3>알림</h3>
-            <div
-              onClick={() => markAllNotificationsAsRead(notifications)}
-              className="mark-as-read"
-            >
+            <div onClick={markAllNotificationsAsRead} className="mark-as-read">
               모든 알림 읽음으로 표시
             </div>
           </div>
