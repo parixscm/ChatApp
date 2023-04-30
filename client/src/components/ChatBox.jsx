@@ -5,7 +5,6 @@ import useFetchReceiverUser from "../hooks/useFetchReceiverUser";
 import BeatLoader from "react-spinners/BeatLoader";
 import { Stack } from "react-bootstrap";
 import moment from "moment";
-import InputEmoji from "react-input-emoji";
 
 function ChatBox() {
   const { user } = useContext(AuthContext);
@@ -17,7 +16,6 @@ function ChatBox() {
 
   const handleSendMessage = () => {
     sendMessage(currentChat._id, user._id, textMessage);
-    console.log("🟠");
     setTextMessage("");
   };
 
@@ -25,7 +23,8 @@ function ChatBox() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  if (!receiverUser || messages.length === 0)
+  // if (!receiverUser || messages.length === 0)
+  if (!receiverUser)
     return (
       <p style={{ textAlign: "center", width: "100%" }}>
         대화 내용이 존재하지 않습니다. 대화를 시작해보세요!

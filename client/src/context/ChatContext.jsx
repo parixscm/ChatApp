@@ -8,6 +8,7 @@ function ChatContextProvider({ children, user }) {
   const [userChats, setUserChats] = useState(null);
   const [userChatsError, setUserChatsError] = useState(null);
   const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
   // 아직 채팅을 시작하지 않은 유저의 목록
   const [potentialUsers, setPotentialUsers] = useState([]);
   // 클릭한 채팅(해당 채팅에 대한 메시지 view)
@@ -22,6 +23,7 @@ function ChatContextProvider({ children, user }) {
   // 소켓
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   // 🔵 채팅 생성
   const createChat = useCallback(async (firstId, secondId) => {
@@ -59,6 +61,32 @@ function ChatContextProvider({ children, user }) {
     setMessages(prev => [...prev, response]);
   }, []);
 
+  // ✅ 모든 알림 읽음으로 표시 (검토 필요함)
+  const markAllNotificationsAsRead = useCallback(() => {
+    // setNotifications([modifiedNotifications]);
+    setNotifications([]);
+  }, []);
+
+  // ✅ 특정 알림 읽음으로 표시 (검토 필요함)
+  const markNotificationAsRead = useCallback(
+    notification => {
+      // 1. find chat to open
+      const targetChat = userChats?.find(chat => {
+        const chatMembers = [user._id, notification.senderId];
+
+        return chat.members.every(member => chatMembers.includes(member));
+      });
+      setCurrentChat(targetChat);
+
+      // 2. mark notification as read
+      const modifiedNotifications = notifications.filter(
+        n => n.senderId !== notification.senderId
+      );
+      setNotifications(modifiedNotifications);
+    },
+    [userChats, user, notifications]
+  );
+
   // ✅ 채팅 시작하지 않은 유저 목록 불러오기
   useEffect(() => {
     const getUsers = async () => {
@@ -87,9 +115,10 @@ function ChatContextProvider({ children, user }) {
       });
 
       setPotentialUsers(pUsers);
+      setAllUsers(response);
     };
     getUsers();
-  }, [userChats, user?._id]);
+  }, [userChats, user]);
 
   // ✅ 유저 채팅 목록 불러오기
   useEffect(() => {
@@ -113,7 +142,7 @@ function ChatContextProvider({ children, user }) {
       }
     };
     getUserChats();
-  }, [user]);
+  }, [user, notifications]);
 
   // ✅ 선택한 채팅방의 메시지 내용 불러오기
   useEffect(() => {
@@ -167,7 +196,7 @@ function ChatContextProvider({ children, user }) {
     socket.emit("sendMessage", { ...newMessage, receiverId });
   }, [newMessage]);
 
-  // 🟠 메시지 받기
+  // 🟠 메시지 & 알림 받기
   useEffect(() => {
     if (!socket) return;
 
@@ -177,12 +206,21 @@ function ChatContextProvider({ children, user }) {
       setMessages(prev => [...prev, res]);
     });
 
-    return () => socket.off("getMessage");
+    socket.on("getNotification", res => {
+      const isChatOpened = currentChat?.members.some(id => id === res.senderId);
+      !isChatOpened && setNotifications(prev => [res, ...prev]);
+    });
+
+    return () => {
+      socket.off("getMessage");
+      socket.off("getNotification");
+    };
   }, [socket, currentChat]);
 
   return (
     <ChatContext.Provider
       value={{
+        allUsers,
         userChats,
         userChatsError,
         isUserChatsLoading,
@@ -195,6 +233,9 @@ function ChatContextProvider({ children, user }) {
         isMessagesLoading,
         sendMessage,
         onlineUsers,
+        notifications,
+        markAllNotificationsAsRead,
+        markNotificationAsRead,
       }}
     >
       {children}

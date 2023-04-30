@@ -3,7 +3,11 @@ const { Server } = require("socket.io");
 let onlineUsers = [];
 
 const io = new Server({
-  cors: ["http://localhost:5173", "http://localhost:5174"],
+  cors: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+  ],
 });
 
 // 소켓 연결
@@ -27,6 +31,11 @@ io.on("connection", socket => {
 
     if (user) {
       io.to(user.socketId).emit("getMessage", message);
+      io.to(user.socketId).emit("getNotification", {
+        senderId: message.senderId,
+        isRead: false,
+        date: new Date(),
+      });
     }
   });
 

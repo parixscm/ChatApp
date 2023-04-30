@@ -5,7 +5,7 @@ function useFetchReceiverUser(user, chat) {
   const [receiverUser, setReceiverUser] = useState(null);
   const [error, setError] = useState(null);
 
-  const receiverId = chat?.members.find(id => id !== user?._id);
+  const receiverId = chat?.members?.find(id => id !== user?._id);
 
   useEffect(() => {
     const getUser = async () => {
