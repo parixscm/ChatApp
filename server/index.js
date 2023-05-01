@@ -1,14 +1,15 @@
+const path = require("path");
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const http = require("http");
-const { Server } = require("socket.io");
 const server = http.createServer(app);
+const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "http://localhost:5174"],
   },
 });
-const cors = require("cors");
 const mongoose = require("mongoose");
 const userRoute = require("./Routes/userRoute");
 const chatRoute = require("./Routes/chatRoute");
@@ -18,6 +19,10 @@ require("dotenv").config();
 // 미들웨어
 app.use(express.json());
 app.use(cors());
+app.use(express.static(__dirname + "/client/dist"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
 app.use("/api/users", userRoute);
 app.use("/api/chats", chatRoute);
 app.use("/api/messages", messageRoute);
