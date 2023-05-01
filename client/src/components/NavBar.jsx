@@ -3,8 +3,10 @@ import { Container, Nav, Navbar, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Notification from "./chat/Notification";
+import { ChatContext } from "../context/ChatContext";
 
 function NavBar() {
+  const { setCurrentChat } = useContext(ChatContext);
   const { user, signoutUser } = useContext(AuthContext);
 
   return (
@@ -30,7 +32,10 @@ function NavBar() {
                 <Notification />
                 <Link
                   to="/signin"
-                  onClick={signoutUser}
+                  onClick={() => {
+                    setCurrentChat(null);
+                    signoutUser();
+                  }}
                   className="link-light text-decoration-none"
                 >
                   로그아웃
