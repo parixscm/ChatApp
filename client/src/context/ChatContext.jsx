@@ -167,7 +167,7 @@ function ChatContextProvider({ children, user }) {
 
   // 🟠 소켓 연결
   useEffect(() => {
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io("http://localhost:3333");
     setSocket(newSocket);
 
     return () => {
